@@ -1,3 +1,4 @@
+const req = require('express/lib/request')
 const moment = require('moment')
 
 module.exports = app => {
@@ -22,6 +23,21 @@ module.exports = app => {
         app.db('tasks')
             .insert(req.body)
             .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err))
+    }
+
+    const remove = (rer, res) => {
+        app.db('tasks')
+            .where({ id: req.params.id, userId: req.user.id })
+            .del()
+            .then(rowsDeleted => {
+                if (rowsDeleted > 0) {
+                    res.status(204).send()
+                } else {
+                    const msg = `Não foi encontrada task com o ID ${req.params.id}.`
+                    res.status(400).send(msg)
+                }
+            })
             .catch(err => res.status(400).json(err))
     }
 }
