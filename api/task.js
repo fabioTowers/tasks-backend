@@ -26,7 +26,7 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    const remove = (rer, res) => {
+    const remove = (req, res) => {
         app.db('tasks')
             .where({ id: req.params.id, userId: req.user.id })
             .del()
@@ -55,12 +55,12 @@ module.exports = app => {
             .first()
             .then(task => {
                 if (!task) {
-                    const msg = `Task com ID ${req.params.id} não econtrada.`
+                    const msg = `Task com ID ${req.params.id} não encontrada.`
                     return res.status(400).send(msg)
                 }
 
                 const doneAt = task.doneAt ? null : new Date()
-                updateTaskDoneAt(res, res, doneAt)
+                updateTaskDoneAt(req, res, doneAt)
             })
             .catch(err => res.status(400).json(err))
     }
